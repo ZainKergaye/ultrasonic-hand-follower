@@ -1,0 +1,4 @@
+= Ultrasonic hand follower concept 
+
+This is a `robot` that tracks a hand using an ultrasonic sensor. This is a proof of concept. 
+
