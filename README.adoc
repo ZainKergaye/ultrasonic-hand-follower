@@ -2,3 +2,9 @@
 
 This is a `robot` that tracks a hand using an ultrasonic sensor. This is a proof of concept. 
 
+
+== Actuation 
+
+The actuators comprise of two simple 5g servos. This gives it 4dof. 
+
+

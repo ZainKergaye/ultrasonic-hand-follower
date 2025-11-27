@@ -1,9 +1,9 @@
 { forEachSupportedSystem }:
 forEachSupportedSystem (
-  { pkgs
-  , system
-  , self
-  ,
+  {
+    pkgs,
+    system,
+    self,
   }:
   {
     default = pkgs.mkShell {
@@ -11,8 +11,10 @@ forEachSupportedSystem (
         git
         fastfetch
         onefetch
+        libclang
+        clang-tools
+        self.packages.${system}.arduino-cli
       ];
-
     };
   }
 )

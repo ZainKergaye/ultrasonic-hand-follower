@@ -1,7 +1,7 @@
-{ arduino-nix
-, arduino-index
-, nixpkgs
-,
+{
+  arduino-nix,
+  arduino-index,
+  nixpkgs,
 }:
 
 let
@@ -15,7 +15,7 @@ let
   pkgs = import nixpkgs { inherit system overlays; };
 in
 {
-  arduino-cli = pkgs.wrapArduinoCLI {
+  ${system}.arduino-cli = pkgs.wrapArduinoCLI {
     libraries = with pkgs.arduinoLibraries; [
       (arduino-nix.latestVersion ADS1X15)
       (arduino-nix.latestVersion Ethernet_Generic)
@@ -24,9 +24,11 @@ in
       (arduino-nix.latestVersion pkgs.arduinoLibraries."Adafruit PWM Servo Driver Library")
     ];
 
+    packages = with pkgs.arduinoPackages; [
+      platforms.arduino.avr."1.6.23"
+      platforms.rp2040.rp2040."2.3.3"
+      platforms.esp32.esp32."2.0.14"
+    ];
+
   };
-  # packages.${system} = with pkgs.arduinoPackages; [
-  #   platforms.arduino.avr."1.6.23"
-  #   platforms.rp2040.rp2040."2.3.3"
-  # ];
 }
