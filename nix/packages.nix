@@ -14,8 +14,8 @@ let
   ];
   pkgs = import nixpkgs { inherit system overlays; };
 in
-{
-  ${system}.arduino-cli = pkgs.wrapArduinoCLI {
+rec {
+  arduino-cli = pkgs.wrapArduinoCLI {
     libraries = with pkgs.arduinoLibraries; [
       (arduino-nix.latestVersion ADS1X15)
       (arduino-nix.latestVersion Ethernet_Generic)
@@ -26,9 +26,26 @@ in
 
     packages = with pkgs.arduinoPackages; [
       platforms.arduino.avr."1.6.23"
-      platforms.rp2040.rp2040."2.3.3"
-      platforms.esp32.esp32."2.0.14"
+      # platforms.rp2040.rp2040."2.3.3"
+      # platforms.esp32.esp32."2.0.14"
     ];
 
+  };
+
+  arduino-program = pkgs.stdenv.mkDerivation {
+    name = "main";
+    src = ../main;
+    phases = [
+      "copyPhase"
+      "compilePhase"
+    ];
+    copyPhase = ''
+      mkdir -p $out/main
+      cp $src/* $out/main/
+    '';
+    compilePhase = ''
+      cd $out
+      ${arduino-cli}/bin/arduino-cli compile main -b arduino:avr:uno --build-path .
+    '';
   };
 }

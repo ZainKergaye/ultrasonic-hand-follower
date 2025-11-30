@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+    nixvim.url = "github:zainkergaye/nixvim_dotfiles";
     arduino-nix.url = "github:bouk/arduino-nix";
     arduino-index = {
       url = "github:bouk/arduino-indexes";
@@ -13,6 +14,7 @@
   outputs =
     {
       nixpkgs,
+      nixvim,
       self,
       arduino-nix,
       arduino-index,
@@ -37,7 +39,7 @@
         );
     in
     {
-      devShells = import ./nix/shell.nix { inherit forEachSupportedSystem; };
-      packages = import ./nix/packages.nix { inherit nixpkgs arduino-nix arduino-index; };
+      devShells = import ./nix/shell.nix { inherit forEachSupportedSystem nixvim; };
+      packages."x86_64-linux" = import ./nix/packages.nix { inherit nixpkgs arduino-nix arduino-index; };
     };
 }

@@ -70,3 +70,7 @@ nbbuild.xml
 nbproject
 
 .direnv
+
+arduino-cli.yaml
+
+result
