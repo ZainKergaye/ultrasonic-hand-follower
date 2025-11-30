@@ -22,6 +22,8 @@ rec {
       (arduino-nix.latestVersion SCL3300)
       (arduino-nix.latestVersion TMCStepper)
       (arduino-nix.latestVersion pkgs.arduinoLibraries."Adafruit PWM Servo Driver Library")
+      (arduino-nix.latestVersion Servo)
+      (arduino-nix.latestVersion Ultrasonic)
     ];
 
     packages = with pkgs.arduinoPackages; [
