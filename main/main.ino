@@ -3,7 +3,7 @@
 
 #define ULTRASONIC_TRIG 12 
 #define ULTRASONIC_EMITTER 13
-#define SERVO_PIN 14
+#define SERVO_PIN 11
 
 Ultrasonic ultrasonic(ULTRASONIC_TRIG, ULTRASONIC_EMITTER); 
 Servo arm0;

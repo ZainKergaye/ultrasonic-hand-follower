@@ -39,12 +39,25 @@ rec {
     src = ../main;
     phases = [
       "copyPhase"
+			"scriptPhase"
       "compilePhase"
     ];
     copyPhase = ''
       mkdir -p $out/main
       cp $src/* $out/main/
     '';
+		scriptPhase = '' 
+			# Create upload script
+      cat > $out/upload.sh <<EOF
+#!/bin/sh
+# Upload the Arduino program to the device
+# Ensure the port is correct before running
+${arduino-cli}/bin/arduino-cli upload --fqbn=arduino:avr:uno --port /dev/ttyACM0 -i $out/main.ino.hex
+EOF
+
+      chmod +rwx $out/upload.sh
+
+		'';
     compilePhase = ''
       cd $out
       ${arduino-cli}/bin/arduino-cli compile main -b arduino:avr:uno --build-path .

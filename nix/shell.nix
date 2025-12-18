@@ -40,6 +40,7 @@ forEachSupportedSystem (
           onefetch
           libclang
           clang-tools
+          usbutils
           self.packages."x86_64-linux".arduino-cli
           nvim
         ];
