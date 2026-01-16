@@ -1,20 +1,38 @@
 #include <Servo.h>
 
+#define SAMPLE_COUNT 4
+
 #define SERVO_PIN 11
 #define MIC_COUNT 3 
 
 Servo arm0;
-int[] mic_pins = {10, 9, 8};
+static int mic_pins[] = {10, 9, 8};
+int sample_avg [MIC_COUNT] = {0};
 
 
 void setup() {
+  for(int i = 0; i < MIC_COUNT; i++) {
+    pinMode(mic_pins[i], INPUT);
+  }
   arm0.attach(SERVO_PIN);
   Serial.begin(9600);
 }
 
 void loop() {
-  arm0.write(0);
-  Serial.println(0);
+  int temp_sum = 0;
+
+  for(int i = 0; i < MIC_COUNT; i++) { // Get samples from each mic and average them
+
+    for(int j = 0; j < SAMPLE_COUNT; j++)
+      temp_sum += analogRead(mic_pins[i]);
+    
+    sample_avg[i] = temp_sum / SAMPLE_COUNT;
+    temp_sum = 0;
+  }
+
+
+  arm0.write(localization_algorithm(sample_avg, SAMPLE_COUNT, 512));
+  //Serial.println(0);
   delay(5000);
 }
 
@@ -28,11 +46,15 @@ void loop() {
 * 
 * returns int
 */
-static int localization_algorithm(double signal[], int samples, double threshold) {
+static int localization_algorithm(int signal[], int samples, int threshold) {
+  int avg_sig = 0; // Calc average sig from all sources
+  for(int i = 0; i < samples; i++) avg_sig += signal[i]; 
+  avg_sig /= samples; 
 
-  for(int i = 0; i < samples; i++) {
-     
-  }
+  if (avg_sig < threshold) return 0; 
+  // Return if sig < threshold
+  
+
 
   return 0;
 }
