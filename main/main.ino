@@ -1,9 +1,12 @@
 #include <Servo.h>
+#include <math.h>
 
 #define SAMPLE_COUNT 4
 
 #define SERVO_PIN 11
 #define MIC_COUNT 3 
+
+#define GET_MIC_ANGLE(mic_num) ((360 / MIC_COUNT) * mic_num)
 
 Servo arm0;
 static int mic_pins[] = {10, 9, 8};
@@ -22,7 +25,6 @@ void loop() {
   int temp_sum = 0;
 
   for(int i = 0; i < MIC_COUNT; i++) { // Get samples from each mic and average them
-
     for(int j = 0; j < SAMPLE_COUNT; j++)
       temp_sum += analogRead(mic_pins[i]);
     
@@ -39,7 +41,7 @@ void loop() {
 
 /* 
 * localization_algorithm - Takes an array of signals with samples and threshold. 
-* Returns the angle it came from
+* Returns the angle it came from in radians.
 * signal - array of signals 
 * samples - number of samples 
 * threshold - minimum signal noise
@@ -51,10 +53,18 @@ static int localization_algorithm(int signal[], int samples, int threshold) {
   for(int i = 0; i < samples; i++) avg_sig += signal[i]; 
   avg_sig /= samples; 
 
-  if (avg_sig < threshold) return 0; 
   // Return if sig < threshold
+  if (avg_sig < threshold) return 0; 
   
+  // Add all signals in rect. form
+  int signal_x_rectangular_sum = 0; 
+  int signal_y_rectangular_sum = 0; 
+  for(int i = 0; i < samples; i++){
+    signal_x_rectangular_sum += sin(GET_MIC_ANGLE(i)) * signal[i];
+    signal_y_rectangular_sum += cos(GET_MIC_ANGLE(i)) * signal[i];
+  }
 
-
-  return 0;
+  // Return angle in polar form
+  return asin(signal_y_rectangular_sum / signal_x_rectangular_sum);
 }
+
